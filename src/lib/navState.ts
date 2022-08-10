@@ -25,15 +25,28 @@ const navSlice = createSlice({
         state.tables.push(action.payload);
       }
     },
+    modifiedTable: (state, action: PayloadAction<Partial<TableBrief> & { id: number }>) => {
+      if (state.state === "ready") {
+        const index = state.tables.findIndex(t => t.id === action.payload.id);
+        if (index !== -1) {
+          state.tables[index] = {
+            ...state.tables[index],
+            ...action.payload,
+          };
+        }
+      }
+    },
     removedTable: (state, action: PayloadAction<number>) => {
       if (state.state === "ready") {
         const index = state.tables.findIndex(t => t.id === action.payload);
-        if (index !== -1) state.tables.splice(index, 1);
+        if (index !== -1) {
+          state.tables.splice(index, 1);
+        }
       }
     },
   },
 });
 
-export const { setNavReady, addedTable, removedTable } = navSlice.actions;
+export const { setNavReady, addedTable, modifiedTable, removedTable } = navSlice.actions;
 
 export const navReducer = navSlice.reducer;

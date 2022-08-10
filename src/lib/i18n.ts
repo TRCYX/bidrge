@@ -4,6 +4,7 @@ import { initReactI18next } from "react-i18next";
 const i18nResources = {
   "zh-CN": {
     translation: {
+      "biddingNotepad": "桥牌叫牌体系记录簿",
       "createTable": "创建表格",
       "create": "创建",
       "cancel": "取消",
@@ -11,6 +12,8 @@ const i18nResources = {
       "title": "标题",
       "minTricks": "最低叫牌墩数",
       "minSuit": "最低叫牌花色",
+      "modifyTableInfo": "修改表格信息",
+      "OK": "确认",
       "removeTable": "删除表格",
       "certainToRemoveTable": "确定要删除表格\"{{title}}\"吗？",
       "remove": "删除",

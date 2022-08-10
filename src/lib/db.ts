@@ -6,6 +6,7 @@ export type DBTableBrief = {
   id?: number;
   title: string;
   firstBid: Bid;
+  description: RichText;
 };
 
 export type Meaning = {

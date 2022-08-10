@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Popup } from "reactjs-popup";
 import { useAppSelector } from "../lib/state";
 import { shallowEqual } from "react-redux";
-import { CreateTableModal } from "./CreateTableModal";
-import { PopupActions } from "reactjs-popup/dist/types";
+import { EditTableInfoModal } from "./EditTableInfoModal";
 import { TableSelector } from "./TableSelector";
 
 export const BottomBar: FunctionComponent = () => {
@@ -24,17 +23,8 @@ export const BottomBar: FunctionComponent = () => {
   );
 
   const navigate = useNavigate();
-  
-  const ref = useRef<PopupActions>(null);
-  useEffect(() => {
-    const closeTooltip = () => ref.current?.close();
-    document.addEventListener("scroll", closeTooltip);
-    return () => {
-      document.removeEventListener("scroll", closeTooltip);
-    }
-  }, []);
 
-  return <nav className="w-full fixed bottom-0 bg-amber-500 flex flex-row px-4 py-3 text-lg shadow-[0_-1px_3px_0_rgba(0,0,0,0.1),0_-1px_2px_-1px_rgba(0,0,0,0.1)]">
+  return <nav className="w-full bg-amber-500 flex flex-row px-4 py-3 text-lg shadow-[0_-1px_3px_0_rgba(0,0,0,0.1),0_-1px_2px_-1px_rgba(0,0,0,0.1)]">
     <div className="w-56 mx-6 flex flex-row">
       <button
         type="button"
@@ -52,10 +42,9 @@ export const BottomBar: FunctionComponent = () => {
       </button>
     </div>
     <div className="ml-4 w-96">
-      <div className="w-full h-full rounded-lg bg-white flex divide-x">
-        <div className="py-1.5 px-3 rounded-l-lg grow flex items-center">{activeTableBrief?.title}</div>
+      <div className="w-full h-full rounded-lg bg-white flex flex-row divide-x">
+        <div className="py-1.5 px-3 my-auto rounded-l-lg grow shrink min-w-0 truncate">{activeTableBrief?.title}</div>
         <Popup
-          ref={ref}
           position="top right"
           arrow={false}
           trigger={<button type="button" className="py-1.5 px-3 rounded-r-lg flex items-center">^</button>}
@@ -74,7 +63,7 @@ export const BottomBar: FunctionComponent = () => {
         lockScroll
       >
         {
-          ((close: () => void) => <CreateTableModal onClose={close} />) as any
+          ((close: () => void) => <EditTableInfoModal onClose={close} />) as any
         }
       </Popup>
     </div>

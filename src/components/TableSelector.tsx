@@ -73,10 +73,10 @@ export const TableSelector: FunctionComponent = () => {
   } else {
     return <div className="w-96">
       <div className="rounded-lg bg-white w-full mb-1 h-96 border flex flex-col shadow-[0_-1px_3px_0_rgba(0,0,0,0.1),0_-1px_2px_-1px_rgba(0,0,0,0.1)] divide-y">
-        <div className="bg-zinc-200 py-3 px-3 flex">
+        <div className="bg-neutral-200 py-3 px-3 flex">
           <input className="grow rounded-md py-2 px-4" placeholder={t`search`} value={searchString} onChange={onInputChange} />
         </div>
-        <div className="grow flex flex-col overflow-y-scroll">
+        <div className="grow flex flex-col overflow-y-auto">
           {tables.tables.map(table => <TableOption
             key={table.title ?? 0}
             table={table}

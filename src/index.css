@@ -20,27 +20,27 @@
 
 @layer components {
   .bidgrid {
-    grid-auto-flow: row dense;
+    @apply grid-flow-row-dense;
   }
 
   .bidgrid > :nth-child(5n+1) {
-    grid-column: 5;
+    @apply col-[5];
   }
 
   .bidgrid > :nth-child(5n+2) {
-    grid-column: 4;
+    @apply col-[4];
   }
 
   .bidgrid > :nth-child(5n+3) {
-    grid-column: 3;
+    @apply col-[3];
   }
 
   .bidgrid > :nth-child(5n+4) {
-    grid-column: 2;
+    @apply col-[2];
   }
 
   .bidgrid > :nth-child(5n+5) {
-    grid-column: 1;
+    @apply col-[1];
   }
 }
 

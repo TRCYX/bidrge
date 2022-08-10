@@ -11,6 +11,7 @@ export type TableBrief = {
   id: number;
   title: string;
   firstBid: Bid;
+  description: RichText;
 };
 
 export type Table = TableBrief & {
@@ -27,12 +28,18 @@ export type TableState =
   } & TableBrief)
   | ({
     state: "ready";
+    readOnly: boolean;
   } & Table);
 
 const tableSlice = createSlice({
   name: "table",
   initialState: { state: "empty" } as TableState,
   reducers: {
+    setDescription: (state, action: PayloadAction<RichText>) => {
+      if (state.state === "ready") {
+        state.description = action.payload;
+      }
+    },
     setCallMeaning: (state, action: PayloadAction<{ call: Call, meaning: RichText | null }>) => {
       if (state.state === "ready") {
         const { call, meaning } = action.payload;
@@ -88,6 +95,7 @@ const tableSlice = createSlice({
     setTableReady: (state, action: PayloadAction<Table>) => {
       return {
         state: "ready",
+        readOnly: false,
         ...action.payload,
       };
     },
@@ -104,9 +112,14 @@ const tableSlice = createSlice({
         }
       }
     },
+    toggleReadOnly: state => {
+      if (state.state === "ready") {
+        state.readOnly = !state.readOnly;
+      }
+    },
   },
 });
 
-export const { setCallMeaning, setCallLink, setFirstBid, setTitle, setTableEmpty, setTableLoading, setTableReady, removedTable } = tableSlice.actions;
+export const { setDescription, setCallMeaning, setCallLink, setFirstBid, setTitle, setTableEmpty, setTableLoading, setTableReady, removedTable, toggleReadOnly } = tableSlice.actions;
 
 export const tableReducer = tableSlice.reducer;

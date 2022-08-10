@@ -43,9 +43,17 @@ export function isBid(call: Call): call is Bid {
   return "0" <= call[0] && call[0] <= "9";
 }
 
+export function getExtraTricks(bid: Bid): ExtraTricks {
+  return parseInt(bid[0]) as ExtraTricks;
+}
+
+export function getSuit(bid: Bid): Suit {
+  return bid.substring(1) as Suit;
+}
+
 export function renderCall(call: Call): string {
   if (isBid(call)) {
-    return call[0] + renderSuit[call.substring(1) as Suit];
+    return getExtraTricks(call) + renderSuit[getSuit(call)];
   } else {
     return {
       "pass": "PASS",

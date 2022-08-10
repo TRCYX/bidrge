@@ -1,7 +1,7 @@
 import { useCreation } from "ahooks";
 import { FunctionComponent, useCallback, KeyboardEvent, useRef } from "react";
-import { BaseEditor, createEditor, Descendant, Editor, Element, Text, Transforms } from "slate";
-import { DefaultElement, Editable, ReactEditor, RenderElementProps, RenderLeafProps, Slate, withReact } from "slate-react";
+import { BaseEditor, createEditor, Descendant, Editor, Text, Transforms } from "slate";
+import { Editable, ReactEditor, RenderLeafProps, Slate, withReact } from "slate-react";
 import { renderSuit, Suit } from "./bridge";
 
 export type ParagraphElement = {
@@ -43,18 +43,17 @@ function renderLeaf(props: RenderLeafProps) {
 }
 
 export type TextEditorProps = {
-  initialValue?: RichText | null;
-  onChange(value: RichText | null): void;
-};
+  initialValue?: RichText;
+  onChange?(value: RichText, editor: BaseEditor & ReactEditor): void;
+  readOnly?: boolean;
+} & Omit<React.TextareaHTMLAttributes<HTMLDivElement>, "initialValue" | "onChange" | "readOnly">;
 
-const emptyValue: RichText = [{ type: "paragraph", children: [{ text: "" }] }];
+export const emptyRichText: RichText = [{ type: "paragraph", children: [{ text: "" }] }];
 
-export const TextEditor: FunctionComponent<TextEditorProps> = ({ initialValue, onChange }) => {
-  initialValue ??= emptyValue;
+export const TextEditor: FunctionComponent<TextEditorProps> = ({ initialValue, onChange, readOnly, ...props }) => {
+  initialValue ??= emptyRichText;
 
   const editor = useEditor();
-  const value = useRef(initialValue);
-  const changed = useRef(false);
 
   const onKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     if (["c", "d", "h", "s"].includes(e.key) && e.ctrlKey && e.altKey) {
@@ -74,23 +73,10 @@ export const TextEditor: FunctionComponent<TextEditorProps> = ({ initialValue, o
   }, [editor]);
 
   const onSlateChange = useCallback((t: RichText) => {
-    value.current = t;
-    changed.current = true;
-  }, []);
-
-  const onBlur = useCallback(() => {
-    if (changed.current) {
-      const [match] = Editor.nodes(editor, {
-        at: {
-          anchor: Editor.start(editor, []),
-          focus: Editor.end(editor, []),
-        },
-        match: n => Text.isText(n) && !!n.text,
-      });
-      onChange(!!match ? value.current : null);
-      changed.current = false;
+    if (onChange && editor.operations.some(op => op.type !== "set_selection")) {
+      onChange(t, editor);
     }
-  }, [editor, onChange]);
+  }, [onChange, editor]);
 
   return <Slate
     editor={editor}
@@ -98,9 +84,10 @@ export const TextEditor: FunctionComponent<TextEditorProps> = ({ initialValue, o
     onChange={onSlateChange}
   >
     <Editable
+      {...props}
       onKeyDown={onKeyDown}
       renderLeaf={renderLeaf}
-      onBlur={onBlur}
+      readOnly={readOnly}
     />
   </Slate>
 };

@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Route, Routes } from "react-router-dom";
 import { BottomBar } from "./components/BottomBar";
+import { EmptyTableView } from "./components/EmptyTableView";
 import { TableBriefView } from "./components/TableBriefView";
 import { TableView } from "./components/TableView";
 import { useAppSelector } from "./lib/state";
@@ -8,31 +9,20 @@ import { useAppSelector } from "./lib/state";
 const Table: FunctionComponent = () => {
   const table = useAppSelector(state => state.table);
   if (table.state === "empty") {
-    return <div></div>;
+    return <EmptyTableView />;
   } else if (table.state === "loading") {
-    return <TableBriefView
-      title={table.title}
-      firstBid={table.firstBid}
-    />;
+    return <TableBriefView key={table.id} table={table} />;
   } else {
-    return <TableView
-      title={table.title}
-      firstBid={table.firstBid}
-      meanings={table.meanings}
-      links={table.links}
-    />;
+    return <TableView key={table.id} table={table} />;
   }
 };
 
-const Modals: FunctionComponent = () => {
-  return <div></div>;
-};
-
 const Page: FunctionComponent = () => {
-  return <div>
-    <Table />
+  return <div className="w-screen h-screen flex flex-col">
+    <div className="grow overflow-y-auto">
+      <Table />
+    </div>
     <BottomBar />
-    <Modals />
   </div>;
 };
 

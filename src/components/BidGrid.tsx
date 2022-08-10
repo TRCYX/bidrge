@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from "react";
 import { Bid, bidRange, maxBid } from "../lib/bridge";
 import { RichText } from "../lib/editor";
-import { IllegalCallItem, CallItem } from "./CallItem";
+import { EmptyCallItem, CallItem } from "./CallItem";
 
 export type BidGridProps = {
   firstBid: Bid;
@@ -19,8 +19,8 @@ export const BidGrid: FunctionComponent<BidGridProps> = ({ firstBid, meanings, l
     [firstBid],
   );
 
-  return <div className="grid grid-cols-5 gap-4 m-2 bidgrid">
-    {illegalBids.map(b => <IllegalCallItem key={b} />)}
+  return <div className="grid grid-cols-5 gap-4 bidgrid">
+    {illegalBids.map(b => <EmptyCallItem key={b} />)}
     {responseBids.map(b =>
       <CallItem
         key={b}
