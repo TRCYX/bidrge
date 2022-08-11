@@ -1,16 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import { TypedUseSelectorHook, useDispatch } from "react-redux";
-import { modalReducer } from "./modalState";
 import { navReducer } from "./navState";
 import { tableReducer } from "./tableState";
-
 
 export const store = configureStore({
   reducer: {
     table: tableReducer,
     nav: navReducer,
-    modal: modalReducer,
   },
 });
 
