@@ -65,14 +65,22 @@ export const CallItem: FunctionComponent<BidItemPropsWithBid> = ({ call, meaning
 
   return <div className="rounded-md border flex flex-col divide-y overflow-hidden">
     <div className="grow-0 shrink-0 flex flex-row h-16 items-center px-2 gap-2">
-      <CircularButton
-        className="font-emoji mr-auto"
-        disabled={link === null}
-        colorScheme={link !== null ? "gray" : "text"}
-        onClick={link !== null ? () => dispatch(setActiveTable(link)) : undefined}
+      <Popup
+        trigger={<CircularButton
+          className="font-emoji mr-auto"
+          disabled={link === null}
+          colorScheme={link !== null ? "gray" : "text"}
+          onClick={link !== null ? () => dispatch(setActiveTable(link)) : undefined}
+        >
+          {renderCall(call)}
+        </CircularButton>}
+        on="hover"
       >
-        {renderCall(call)}
-      </CircularButton>
+        {link !== null && <div className="px-3 py-3 bg-white border rounded-lg w-80 flex flex-row items-center shadow-md">
+        <div className="font-emoji text-lg grow shrink truncate">{link.title}</div>
+        <div className="font-emoji ml-auto text-lg">{renderCall(link.firstBid)}</div>
+        </div>}
+      </Popup>
       {!readOnly &&
         <Popup
           trigger={<CircularButton colorScheme="gray">Link</CircularButton>}
@@ -88,5 +96,5 @@ export const CallItem: FunctionComponent<BidItemPropsWithBid> = ({ call, meaning
       onChange={onMeaningChange}
       readOnly={readOnly}
     />
-  </div>;
+  </div >;
 };
