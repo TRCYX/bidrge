@@ -1,37 +1,39 @@
 import classNames from "classnames";
-import React, { FunctionComponent, ReactNode } from "react";
+import React, { DetailedHTMLProps, FunctionComponent, ReactNode } from "react";
+import { forwardRef } from "react";
 import { ColorSchemes } from "../lib/colorSchemes";
 
 const classes = {
   "amber": "active:outline-amber-500 active:bg-amber-200 hover:border-amber-500 hover:bg-amber-100",
   "red": "",
-  "gray": "active:outline-neutral-400 active:bg-neutral-100 hover:border-neutral-400 bg-neutral-50",
+  "gray": "active:outline-neutral-500 active:bg-neutral-200 hover:border-neutral-500 hover:bg-neutral-100",
+  "text": "border-transparent",
 };
 
 const activeClasses = {
   "amber": "bg-amber-100 border-amber-500",
   "red": "",
-  "gray": "bg-neutral-50 border-neutral-400",
+  "gray": "bg-neutral-100 border-neutral-500",
+  "text": "",
 };
 
 export type CircularButtonProps = {
-  onClick(): void;
   active?: boolean;
   colorScheme: ColorSchemes;
-  className?: string;
   children?: ReactNode | ReactNode[];
-};
+} & Omit<DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "children">;
 
-export const CircularButton: FunctionComponent<CircularButtonProps> = ({ onClick, active, colorScheme, className, children }) => {
+export const CircularButton = forwardRef<HTMLButtonElement, CircularButtonProps>(({ active, colorScheme, className, children, ...props }, ref) => {
   return <button
+    ref={ref}
     className={classNames(
       "rounded-full border w-12 h-12 text-lg active:outline active:outline-2",
       classes[colorScheme],
       { [activeClasses[colorScheme]]: active },
       className,
     )}
-    onClick={onClick}
+    {...props}
   >
     {children}
-  </button>
-};
+  </button>;
+});

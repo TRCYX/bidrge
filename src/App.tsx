@@ -13,7 +13,7 @@ const Table: FunctionComponent = () => {
   if (table.state === "empty") {
     return <EmptyTableView />;
   } else if (table.state === "loading") {
-    return <TableBriefView key={table.id} table={table} />;
+    return <TableBriefView key={table.id} id={table.id} />;
   } else {
     return <TableView key={table.id} table={table} />;
   }

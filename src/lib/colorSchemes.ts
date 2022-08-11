@@ -1,1 +1,1 @@
-export type ColorSchemes = "amber" | "red" | "gray";
+export type ColorSchemes = "amber" | "red" | "gray" | "text";

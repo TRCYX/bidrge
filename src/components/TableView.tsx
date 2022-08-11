@@ -51,8 +51,8 @@ export const TableView: FunctionComponent<TableViewProps> =
               Edit
             </CircularButton>
             {editTableInfoModalOpen && <EditTableInfoModal open id={id} title={title} firstBid={firstBid} onClose={closeEditableInfoModal} />}
-            <CircularButton active={readOnly} colorScheme="gray" onClick={onToggleReadOnly}>
-              RO
+            <CircularButton active={!readOnly} colorScheme="gray" onClick={onToggleReadOnly}>
+              RW
             </CircularButton>
           </div>
           <div className="border border-amber-500 bg-amber-100 rounded-lg grow overflow-hidden grid">

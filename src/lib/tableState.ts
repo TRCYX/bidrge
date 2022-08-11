@@ -4,7 +4,7 @@ import { RichText } from "./editor";
 
 export type BidInfo = {
   meaning: RichText | null;
-  link: number | null;
+  link: TableBrief | null;
 };
 
 export type TableBrief = {
@@ -16,7 +16,7 @@ export type TableBrief = {
 export type Table = TableBrief & {
   description: RichText;
   meanings: Partial<Record<Call, RichText>>;
-  links: Partial<Record<Call, number>>;
+  links: Partial<Record<Call, TableBrief>>;
 };
 
 export type TableState =
@@ -50,7 +50,7 @@ const tableSlice = createSlice({
         }
       }
     },
-    setCallLink: (state, action: PayloadAction<{ call: Call, link: number | null }>) => {
+    setCallLink: (state, action: PayloadAction<{ call: Call, link: TableBrief | null }>) => {
       if (state.state === "ready") {
         const { call, link } = action.payload;
         if (link !== null) {
@@ -95,7 +95,7 @@ const tableSlice = createSlice({
     setTableReady: (state, action: PayloadAction<Table>) => {
       return {
         state: "ready",
-        readOnly: false,
+        readOnly: true,
         ...action.payload,
       };
     },
@@ -107,7 +107,7 @@ const tableSlice = createSlice({
           };
         } else if (state.state === "ready") {
           Object.entries(state.links)
-            .filter(([, v]) => v === action.payload)
+            .filter(([, v]) => v.id === action.payload)
             .forEach(([k,]) => delete state.links[k as Call]);
         }
       }

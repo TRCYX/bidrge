@@ -2,16 +2,18 @@ import React, { FunctionComponent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { db } from "../lib/db";
 import { removedTable as removedTableNav } from "../lib/navState";
-import { AppDispatch, AppState, useAppDispatch } from "../lib/state";
+import { AppDispatch, useAppDispatch } from "../lib/state";
 import { removedTable as removedTableTable, TableBrief } from "../lib/tableState";
 import { Modal } from "./Modal";
 import { PushButton } from "./PushButton";
 
-const removeTable = (table: TableBrief) => async (dispatch: AppDispatch, getState: () => AppState) => {
+const removeTable = (table: TableBrief) => async (dispatch: AppDispatch) => {
   await db.transaction("rw", [db.briefs, db.meanings, db.links], async () => {
-    db.briefs.delete(table.id);
-    db.meanings.where("tableId").equals(table.id).delete();
-    db.links.where("tableId").equals(table.id).delete();
+    return Promise.all([
+      db.briefs.delete(table.id),
+      db.meanings.where("tableId").equals(table.id).delete(),
+      db.links.where("tableId").equals(table.id).or("link").equals(table.id).delete(),
+    ]);
   });
   dispatch(removedTableNav(table.id));
   dispatch(removedTableTable(table.id));

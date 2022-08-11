@@ -1,12 +1,14 @@
 import React, { FunctionComponent, useMemo } from "react";
 import { Bid, bidRange, maxBid } from "../lib/bridge";
 import { RichText } from "../lib/editor";
-import { EmptyCallItem, CallItem } from "./CallItem";
+import { TableBrief } from "../lib/tableState";
+import { CallItem } from "./CallItem";
+import { EmptyCallItem } from "./EmptyCallItem";
 
 export type BidGridProps = {
   firstBid: Bid;
   meanings: Partial<Record<Bid, RichText>>;
-  links: Partial<Record<Bid, number>>;
+  links: Partial<Record<Bid, TableBrief>>;
 };
 
 export const BidGrid: FunctionComponent<BidGridProps> = ({ firstBid, meanings, links }) => {

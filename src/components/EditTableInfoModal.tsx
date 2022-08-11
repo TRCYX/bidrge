@@ -13,9 +13,11 @@ import { PushButton } from "./PushButton";
 
 const modifyTable = (id: number, title: string, firstBid: Bid) => async (dispatch: AppDispatch) => {
   await db.transaction("rw", [db.briefs, db.meanings, db.links], async () => {
-    await db.briefs.update(id, { title, firstBid });
-    await db.meanings.where("tableId").equals(id).filter(x => isBid(x.call) && compareBids(x.call, firstBid) < 0).delete();
-    await db.links.where("tableId").equals(id).filter(x => isBid(x.call) && compareBids(x.call, firstBid) < 0).delete();
+    return Promise.all([
+      db.briefs.update(id, { title, firstBid }),
+      db.meanings.where("tableId").equals(id).filter(x => isBid(x.call) && compareBids(x.call, firstBid) < 0).delete(),
+      db.links.where("tableId").equals(id).filter(x => isBid(x.call) && compareBids(x.call, firstBid) < 0).delete(),
+    ]);
   });
 
   dispatch(setTitle(title));

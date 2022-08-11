@@ -1,29 +1,28 @@
 import classNames from "classnames";
-import React, { FunctionComponent, ReactNode } from "react";
+import React, { DetailedHTMLProps, FunctionComponent, ReactNode } from "react";
 import { ColorSchemes } from "../lib/colorSchemes";
 
 const classes = {
   "amber": "bg-amber-500 hover:bg-amber-400 active:bg-amber-300 disabled:bg-amber-300 text-white",
   "red": "bg-red-500 hover:bg-red-400 active:bg-red-300 disabled:bg-red-300 text-white",
   "gray": "bg-neutral-400 hover:bg-neutral-300 active:bg-neutral-200 disabled:bg-neutral-200 text-white",
+  "text": "",
 };
 
 const loadingInnerClasses = {
   "amber": "border-white",
   "gray": "border-white",
   "red": "border-white",
+  "text": "",
 };
 
 export type PushButtonProps = {
-  onClick(): void;
-  disabled?: boolean;
   loading?: boolean;
   colorScheme: ColorSchemes;
-  className?: string;
   children?: ReactNode | ReactNode[];
-};
+} & Omit<DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "children">;
 
-export const PushButton: FunctionComponent<PushButtonProps> = ({ onClick, disabled, loading, colorScheme, className, children }) => {
+export const PushButton: FunctionComponent<PushButtonProps> = ({ loading, colorScheme, className, children, ...props }) => {
   return <button
     className={classNames(
       "rounded-lg w-32 text-lg font-semibold text-center",
@@ -31,8 +30,7 @@ export const PushButton: FunctionComponent<PushButtonProps> = ({ onClick, disabl
       classes[colorScheme],
       className,
     )}
-    disabled={disabled}
-    onClick={onClick}
+    {...props}
   >
     {loading && <>
       <div className="border-4 rounded-full w-6 h-6 m-auto">

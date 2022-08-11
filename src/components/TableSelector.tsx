@@ -1,49 +1,22 @@
-import React, { ChangeEvent, FunctionComponent, useCallback, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
-import { setTableLoading, setTableReady, TableBrief } from "../lib/tableState";
-import { AppDispatch, useAppDispatch, useAppSelector } from "../lib/state";
-import { db } from "../lib/db";
-import { Call, renderCall } from "../lib/bridge";
+import { TableBrief } from "../lib/tableState";
+import { useAppSelector } from "../lib/state";
+import { renderCall } from "../lib/bridge";
 import { DeleteTableModal } from "./DeleteTableModal";
-import { RichText } from "../lib/editor";
 import { useBoolean } from "ahooks";
 import { Input } from "./Input";
-
-const setActiveTable = (brief: TableBrief) => async (dispatch: AppDispatch) => {
-  dispatch(setTableLoading(brief));
-
-  const table = await db.transaction("r", [db.briefs, db.meanings, db.links], async () => {
-    const description = (await db.briefs.get(brief.id))!.description;
-
-    const meanings: Partial<Record<Call, RichText>> = {};
-    await db.meanings.where("tableId").equals(brief.id).each(m => {
-      meanings[m.call] = m.meaning;
-    });
-
-    const links: Partial<Record<Call, number>> = {};
-    await db.links.where("tableId").equals(brief.id).each(l => {
-      links[l.call] = l.link;
-    });
-
-    return {
-      ...brief,
-      description,
-      meanings,
-      links,
-    };
-  });
-
-  dispatch(setTableReady(table));
-};
+import { useCallback } from "react";
 
 type TableOptionProps = {
   table: TableBrief;
   visible: boolean;
+  deletable?: boolean;
+  onSelect?(table: TableBrief): void;
 };
 
-const TableOption: FunctionComponent<TableOptionProps> = ({ table, visible }) => {
-  const dispatch = useAppDispatch();
+const TableOption: FunctionComponent<TableOptionProps> = ({ table, visible, deletable, onSelect }) => {
   const [
     deleteTableModalOpen,
     {
@@ -53,12 +26,12 @@ const TableOption: FunctionComponent<TableOptionProps> = ({ table, visible }) =>
   ] = useBoolean(false);
 
   return <div
-    className={classNames({ "hidden": !visible }, "px-3 box-content border-b first:border-t flex flex-row hover:cursor-pointer items-center")}
-    onClick={() => dispatch(setActiveTable(table))}
+    className={classNames({ "hidden": !visible }, "px-3 box-content border-b first:border-t flex flex-row items-center", { "hover:cursor-pointer": onSelect })}
+    onClick={() => onSelect && onSelect(table)}
   >
     <div className="font-emoji my-3 text-lg grow shrink truncate">{table.title}</div>
     <div className="font-emoji ml-auto my-3 text-lg">{renderCall(table.firstBid)}</div>
-    <button
+    {deletable && <button
       className="ml-3 w-10 h-10 min-w-[2.5rem] border rounded-full"
       onClick={e => {
         e.stopPropagation();
@@ -66,17 +39,28 @@ const TableOption: FunctionComponent<TableOptionProps> = ({ table, visible }) =>
       }}
     >
       D
-    </button>
+    </button>}
     {deleteTableModalOpen && <DeleteTableModal open nested table={table} onClose={closeDeleteTableModal} />}
   </div>;
 };
 
-export const TableSelector: FunctionComponent = () => {
+export type TableSelectorProps = {
+  deletable?: boolean;
+  onSelect?(table: TableBrief): void;
+  onClose(): void;
+};
+
+export const TableSelector: FunctionComponent<TableSelectorProps> = ({ deletable, onSelect, onClose }) => {
   const { t } = useTranslation();
 
   const tables = useAppSelector(state => state.nav);
 
   const [searchString, setSearchString] = useState("");
+
+  const handleSelect = useCallback((table: TableBrief) => {
+    onSelect && onSelect(table);
+    onClose();
+  }, [onSelect, onClose]);
 
   if (tables.state === "loading") {
     // TODO
@@ -91,7 +75,10 @@ export const TableSelector: FunctionComponent = () => {
           {tables.tables.map(table => <TableOption
             key={table.title ?? 0}
             table={table}
-            visible={!!((table.title ?? t`opening`)?.includes(searchString))} />)}
+            visible={!!((table.title ?? t`opening`)?.includes(searchString))}
+            deletable={deletable}
+            onSelect={handleSelect}
+          />)}
         </div>
       </div>
     </div>;
