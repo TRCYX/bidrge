@@ -8,6 +8,7 @@ import { useCallback } from "react";
 import { db } from "../lib/db";
 import { EditTableInfoModal } from "./EditTableInfoModal";
 import { useBoolean } from "ahooks";
+import { CircularButton } from "./CircularButton";
 
 export type TableViewProps = {
   table: Table;
@@ -43,14 +44,13 @@ export const TableView: FunctionComponent<TableViewProps> =
         </div>
         <div className="col-start-2 col-end-4 flex flex-row gap-4 grow-0">
           <div className="flex flex-col items-center gap-4">
-            <button className="rounded-full w-12 h-12 border bg-white" onClick={openEditTableInfoModal}>E</button>
+            <CircularButton colorScheme="gray" onClick={openEditTableInfoModal}>
+              Edit
+            </CircularButton>
             {editTableInfoModalOpen && <EditTableInfoModal open id={id} title={title} firstBid={firstBid} onClose={closeEditableInfoModal} />}
-            <button
-              className="rounded-full w-12 h-12 border bg-white"
-              onClick={onToggleReadOnly}
-            >
-              L
-            </button>
+            <CircularButton active={readOnly} colorScheme="gray" onClick={onToggleReadOnly}>
+              RO
+            </CircularButton>
           </div>
           <div className="border border-amber-500 rounded-lg bg-amber-100 grow overflow-hidden">
             <TextEditor

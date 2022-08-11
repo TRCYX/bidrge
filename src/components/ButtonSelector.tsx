@@ -1,5 +1,6 @@
-import React, { Key, ReactNode } from "react";
+import React, { Key, ReactNode, useCallback } from "react";
 import classNames from "classnames";
+import { CircularButton } from "./CircularButton";
 
 export type ButtonSelectorProps<T> = {
   values: readonly T[];
@@ -14,16 +15,15 @@ export function ButtonSelector<T>({
   values, value, renderValue = x => `${x}`, equal = (a, b) => a === b, onChange = () => { }, calculateKey
 }: ButtonSelectorProps<T>) {
   return <div className="flex flex-row gap-4 flex-wrap">
-    {values.map(v => <button
-      key={calculateKey(v)}
-      className={classNames(
-        "rounded-full border w-12 h-12 text-lg active:outline active:outline-amber-500 active:outline-2 active:bg-amber-200",
-        { "bg-amber-100 border-amber-500": equal(v, value) }
-      )}
-      onClick={() => onChange(v)}
-    >
-      {renderValue(v)}
-    </button>
+    {values.map(v =>
+      <CircularButton
+        key={calculateKey(v)}
+        active={equal(v, value)}
+        colorScheme="amber"
+        onClick={() => onChange(v)}
+      >
+        {renderValue(v)}
+      </CircularButton>
     )}
   </div>;
 }
