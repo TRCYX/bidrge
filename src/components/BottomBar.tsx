@@ -6,6 +6,7 @@ import { useAppSelector } from "../lib/state";
 import { shallowEqual } from "react-redux";
 import { EditTableInfoModal } from "./EditTableInfoModal";
 import { TableSelector } from "./TableSelector";
+import { useBoolean } from "ahooks";
 
 export const BottomBar: FunctionComponent = () => {
   const { t } = useTranslation();
@@ -21,6 +22,14 @@ export const BottomBar: FunctionComponent = () => {
     },
     shallowEqual,
   );
+
+  const [
+    createTableModalOpen,
+    {
+      setTrue: openCreateTableModal,
+      setFalse: closeCreateTableModal,
+    },
+  ] = useBoolean(false);
 
   const navigate = useNavigate();
 
@@ -55,17 +64,14 @@ export const BottomBar: FunctionComponent = () => {
       </div>
     </div>
     <div className="ml-4">
-      <Popup
-        trigger={<button type="button" className="rounded-full py-1.5 px-3 w-12 h-12 bg-white flex justify-center items-center">
-          <span className="font-bold">+</span>
-        </button>}
-        modal
-        lockScroll
+      <button
+        type="button"
+        className="rounded-full py-1.5 px-3 w-12 h-12 bg-white flex justify-center items-center"
+        onClick={openCreateTableModal}
       >
-        {
-          ((close: () => void) => <EditTableInfoModal onClose={close} />) as any
-        }
-      </Popup>
+        <span className="font-bold">+</span>
+      </button>
+      {createTableModalOpen && <EditTableInfoModal open onClose={closeCreateTableModal} />}
     </div>
     <div className="ml-auto rounded-lg py-1.5 px-3 w-40 bg-white flex justify-center items-center">
       <div className="font-bold text-lg">{t`save...`}</div>

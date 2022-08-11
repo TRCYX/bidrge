@@ -6,8 +6,8 @@ import { RichText, TextEditor } from "../lib/editor";
 import { useAppDispatch, useAppSelector } from "../lib/state";
 import { useCallback } from "react";
 import { db } from "../lib/db";
-import Popup from "reactjs-popup";
 import { EditTableInfoModal } from "./EditTableInfoModal";
+import { useBoolean } from "ahooks";
 
 export type TableViewProps = {
   table: Table;
@@ -28,6 +28,14 @@ export const TableView: FunctionComponent<TableViewProps> =
 
     const onToggleReadOnly = useCallback(() => dispatch(toggleReadOnly()), [dispatch]);
 
+    const [
+      editTableInfoModalOpen,
+      {
+        setTrue: openEditTableInfoModal,
+        setFalse: closeEditableInfoModal,
+      },
+    ] = useBoolean(false);
+
     return <div className="mx-6 my-8 flex flex-col gap-4">
       <div className="grid grid-cols-5 gap-4">
         <div className="border border-amber-600 rounded-lg bg-amber-600 overflow-hidden">
@@ -35,12 +43,8 @@ export const TableView: FunctionComponent<TableViewProps> =
         </div>
         <div className="col-start-2 col-end-4 flex flex-row gap-4 grow-0">
           <div className="flex flex-col items-center gap-4">
-            <Popup
-              trigger={<button className="rounded-full w-12 h-12 border bg-white">E</button>}
-              modal
-            >
-              {((close: () => void) => <EditTableInfoModal id={id} title={title} firstBid={firstBid} onClose={close} />) as any}
-            </Popup>
+            <button className="rounded-full w-12 h-12 border bg-white" onClick={openEditTableInfoModal}>E</button>
+            {editTableInfoModalOpen && <EditTableInfoModal open id={id} title={title} firstBid={firstBid} onClose={closeEditableInfoModal} />}
             <button
               className="rounded-full w-12 h-12 border bg-white"
               onClick={onToggleReadOnly}

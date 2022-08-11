@@ -18,11 +18,13 @@ const removeTable = (table: TableBrief) => async (dispatch: AppDispatch, getStat
 };
 
 export type DeleteTableModalProps = {
+  open: boolean;
+  nested?: boolean;
   table: TableBrief;
   onClose(): void;
 };
 
-export const DeleteTableModal: FunctionComponent<DeleteTableModalProps> = ({ table, onClose }) => {
+export const DeleteTableModal: FunctionComponent<DeleteTableModalProps> = ({ open, nested, table, onClose }) => {
   const { t } = useTranslation();
 
   // TODO
@@ -30,20 +32,33 @@ export const DeleteTableModal: FunctionComponent<DeleteTableModalProps> = ({ tab
   const dispatch = useAppDispatch();
 
   return <Modal
+    open={open}
+    nested={nested}
+    working={working}
     title={t`removeTable`}
     actions={
       <>
         <PushButton
-          caption={t`remove`}
           onClick={async () => {
             setWorking(true);
             await dispatch(removeTable(table));
+            setWorking(false);
             onClose();
           }}
+          disabled={working}
+          loading={working}
           colorScheme="red"
-          classes="mr-3"
-        />
-        <PushButton caption={t`cancel`} onClick={onClose} colorScheme="gray" />
+          className="mr-3"
+        >
+          {t`remove`}
+        </PushButton>
+        <PushButton
+          disabled={working}
+          onClick={onClose}
+          colorScheme="gray"
+        >
+          {t`cancel`}
+        </PushButton>
       </>
     }
     onClose={onClose}

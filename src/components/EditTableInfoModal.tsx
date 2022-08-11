@@ -34,6 +34,8 @@ const createTable = (title: string, firstBid: Bid) => async (dispatch: AppDispat
 }
 
 export type EditTableInfoModalProps = {
+  open: boolean;
+  nested?: boolean;
   onClose(): void;
 } & (Pick<TableBrief, "id" | "title" | "firstBid"> | {
   id?: undefined;
@@ -41,7 +43,7 @@ export type EditTableInfoModalProps = {
   firstBid?: undefined;
 });
 
-export const EditTableInfoModal: FunctionComponent<EditTableInfoModalProps> = ({ onClose, id, title: initialTitle = "", firstBid: initialFirstBid = "1C" }) => {
+export const EditTableInfoModal: FunctionComponent<EditTableInfoModalProps> = ({ open, nested, onClose, id, title: initialTitle = "", firstBid: initialFirstBid = "1C" }) => {
   const { t } = useTranslation();
 
   const [title, setTitle] = useState(initialTitle);
@@ -53,11 +55,13 @@ export const EditTableInfoModal: FunctionComponent<EditTableInfoModalProps> = ({
   const dispatch = useAppDispatch();
 
   return <Modal
+    open={open}
+    nested={nested}
+    working={working}
     title={id != null ? t`modifyTableInfo` : t`createTable`}
     actions={
       <>
         <PushButton
-          caption={id != null ? t`OK` : t`create`}
           onClick={async () => {
             setWorking(true);
             const firstBid = `${firstBidTricks}${firstBidSuit}` as Bid;
@@ -66,12 +70,23 @@ export const EditTableInfoModal: FunctionComponent<EditTableInfoModalProps> = ({
             } else {
               await dispatch(createTable(title, firstBid));
             }
+            setWorking(false);
             onClose();
           }}
+          disabled={working}
+          loading={working}
           colorScheme="amber"
-          classes="mr-3"
-        />
-        <PushButton caption={t`cancel`} onClick={onClose} colorScheme="gray" />
+          className="mr-3"
+        >
+          {id != null ? t`OK` : t`create`}
+        </PushButton>
+        <PushButton
+          onClick={onClose}
+          disabled={working}
+          colorScheme="gray"
+        >
+          {t`cancel`}
+        </PushButton>
       </>
     }
     onClose={onClose}

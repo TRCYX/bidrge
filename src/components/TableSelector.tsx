@@ -5,9 +5,9 @@ import { setTableLoading, setTableReady, TableBrief } from "../lib/tableState";
 import { AppDispatch, useAppDispatch, useAppSelector } from "../lib/state";
 import { db } from "../lib/db";
 import { Call, renderCall } from "../lib/bridge";
-import Popup from "reactjs-popup";
 import { DeleteTableModal } from "./DeleteTableModal";
 import { RichText } from "../lib/editor";
+import { useBoolean } from "ahooks";
 
 const setActiveTable = (brief: TableBrief) => async (dispatch: AppDispatch) => {
   dispatch(setTableLoading(brief));
@@ -40,22 +40,30 @@ type TableOptionProps = {
 
 const TableOption: FunctionComponent<TableOptionProps> = ({ table, visible }) => {
   const dispatch = useAppDispatch();
+  const [
+    deleteTableModalOpen,
+    {
+      setTrue: openDeleteTableModal,
+      setFalse: closeDeleteTableModal,
+    },
+  ] = useBoolean(false);
+
   return <div
     className={classNames({ "hidden": !visible }, "px-3 box-content border-b first:border-t flex flex-row hover:cursor-pointer items-center")}
     onClick={() => dispatch(setActiveTable(table))}
   >
-    <div className="my-3 text-lg">{table.title}</div>
+    <div className="my-3 text-lg grow shrink truncate">{table.title}</div>
     <div className="font-emoji ml-auto my-3 text-lg">{renderCall(table.firstBid)}</div>
-    <Popup
-      trigger={<button className="ml-3 w-10 h-10 border rounded-full">D</button>}
-      modal
-      lockScroll
-      nested
+    <button
+      className="ml-3 w-10 h-10 min-w-[2.5rem] border rounded-full"
+      onClick={e => {
+        e.stopPropagation();
+        openDeleteTableModal();
+      }}
     >
-      {
-        ((close: () => void) => <DeleteTableModal table={table} onClose={close} />) as any
-      }
-    </Popup>
+      D
+    </button>
+    {deleteTableModalOpen && <DeleteTableModal open nested table={table} onClose={closeDeleteTableModal} />}
   </div>;
 };
 
