@@ -52,7 +52,10 @@ export const BottomBar: FunctionComponent = () => {
     </div>
     <div className="ml-4 w-96">
       <div className="w-full h-full rounded-lg bg-white flex flex-row divide-x">
-        <div className="py-1.5 px-3 my-auto rounded-l-lg grow shrink min-w-0 truncate">{activeTableBrief?.title}</div>
+        <div className="py-1.5 px-3 my-auto rounded-l-lg grow shrink min-w-0 truncate">
+          {activeTableBrief != null && <span className="font-emoji">{activeTableBrief.title}</span>}
+          {activeTableBrief == null && <span className="text-neutral-400">{t`noSelectedTable`}</span>}
+        </div>
         <Popup
           position="top right"
           arrow={false}

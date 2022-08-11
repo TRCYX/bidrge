@@ -9,6 +9,7 @@ import { db } from "../lib/db";
 import { EditTableInfoModal } from "./EditTableInfoModal";
 import { useBoolean } from "ahooks";
 import { CircularButton } from "./CircularButton";
+import { useTranslation } from "react-i18next";
 
 export type TableViewProps = {
   table: Table;
@@ -17,6 +18,8 @@ export type TableViewProps = {
 export const TableView: FunctionComponent<TableViewProps> =
   ({ table: { id, title, firstBid, description, meanings, links } }) => {
     const dispatch = useAppDispatch();
+
+    const { t } = useTranslation();
 
     const readOnly = useAppSelector(state => (state.table as TableState & { state: "ready" }).readOnly);
 
@@ -40,7 +43,7 @@ export const TableView: FunctionComponent<TableViewProps> =
     return <div className="mx-6 my-8 flex flex-col gap-4">
       <div className="grid grid-cols-5 gap-4">
         <div className="border border-amber-600 rounded-lg bg-amber-600 overflow-hidden">
-          <h1 className="text-3xl p-4 text-white whitespace-pre-wrap break-words max-h-80 overflow-y-auto">{title}</h1>
+          <h1 className="text-3xl p-4 text-white whitespace-pre-wrap break-words max-h-80 overflow-y-auto font-emoji">{title}</h1>
         </div>
         <div className="col-start-2 col-end-4 flex flex-row gap-4 grow-0">
           <div className="flex flex-col items-center gap-4">
@@ -52,12 +55,13 @@ export const TableView: FunctionComponent<TableViewProps> =
               RO
             </CircularButton>
           </div>
-          <div className="border border-amber-500 rounded-lg bg-amber-100 grow overflow-hidden">
+          <div className="border border-amber-500 bg-amber-100 rounded-lg grow overflow-hidden grid">
             <TextEditor
               className="p-3 min-h-full max-h-80 overflow-y-auto"
               initialValue={description}
               onChange={onDescriptionChange}
               readOnly={readOnly}
+              placeholder={t`tableDescription`}
             />
           </div>
         </div>

@@ -29,7 +29,7 @@ root.render(
 db.transaction("r", [db.briefs], () => {
   return db.briefs.orderBy("id").toArray();
 }).then(briefs => {
-  store.dispatch(setNavReady(briefs as TableBrief[]));
+  store.dispatch(setNavReady(briefs.map(({ id, title, firstBid }) => ({ id, title, firstBid } as TableBrief))));
 });
 
 // If you want to start measuring performance in your app, pass a function

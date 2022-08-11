@@ -7,6 +7,7 @@ import { addedTable, modifiedTable } from "../lib/navState";
 import { AppDispatch, useAppDispatch } from "../lib/state";
 import { setFirstBid, setTableReady, setTitle, TableBrief } from "../lib/tableState";
 import { ButtonSelector } from "./ButtonSelector";
+import { Input } from "./Input";
 import { Modal } from "./Modal";
 import { PushButton } from "./PushButton";
 
@@ -30,7 +31,7 @@ const createTable = (title: string, firstBid: Bid) => async (dispatch: AppDispat
   })) as number;
 
   dispatch(setTableReady({ id, title, firstBid, description, meanings: {}, links: {} }));
-  dispatch(addedTable({ id, title, firstBid, description }));
+  dispatch(addedTable({ id, title, firstBid }));
 }
 
 export type EditTableInfoModalProps = {
@@ -94,11 +95,11 @@ export const EditTableInfoModal: FunctionComponent<EditTableInfoModalProps> = ({
     <div className="grid grid-cols-2 gap-4">
       <div className="col-span-2 flex flex-col">
         <label className="block mb-1" htmlFor="createTableTitleInput">{t`title`}</label>
-        <input
+        <Input
           id="createTabletitleInput"
           className="border rounded-lg px-3 py-1.5"
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={setTitle}
         />
       </div>
       <div className="flex flex-col flex-1">

@@ -1,4 +1,6 @@
+import { useTitle } from "ahooks";
 import React, { FunctionComponent } from "react";
+import { useTranslation } from "react-i18next";
 import { Route, Routes } from "react-router-dom";
 import { BottomBar } from "./components/BottomBar";
 import { EmptyTableView } from "./components/EmptyTableView";
@@ -27,6 +29,8 @@ const Page: FunctionComponent = () => {
 };
 
 export const App: FunctionComponent = () => {
+  const {t} = useTranslation();
+  useTitle("BRIDGE - " + t`biddingNotepad`);
   return <Routes>
     <Route path="/" element={<Page />} />
   </Routes>;

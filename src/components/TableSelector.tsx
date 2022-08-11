@@ -8,11 +8,14 @@ import { Call, renderCall } from "../lib/bridge";
 import { DeleteTableModal } from "./DeleteTableModal";
 import { RichText } from "../lib/editor";
 import { useBoolean } from "ahooks";
+import { Input } from "./Input";
 
 const setActiveTable = (brief: TableBrief) => async (dispatch: AppDispatch) => {
   dispatch(setTableLoading(brief));
 
-  const table = await db.transaction("r", [db.meanings, db.links], async () => {
+  const table = await db.transaction("r", [db.briefs, db.meanings, db.links], async () => {
+    const description = (await db.briefs.get(brief.id))!.description;
+
     const meanings: Partial<Record<Call, RichText>> = {};
     await db.meanings.where("tableId").equals(brief.id).each(m => {
       meanings[m.call] = m.meaning;
@@ -25,6 +28,7 @@ const setActiveTable = (brief: TableBrief) => async (dispatch: AppDispatch) => {
 
     return {
       ...brief,
+      description,
       meanings,
       links,
     };
@@ -52,7 +56,7 @@ const TableOption: FunctionComponent<TableOptionProps> = ({ table, visible }) =>
     className={classNames({ "hidden": !visible }, "px-3 box-content border-b first:border-t flex flex-row hover:cursor-pointer items-center")}
     onClick={() => dispatch(setActiveTable(table))}
   >
-    <div className="my-3 text-lg grow shrink truncate">{table.title}</div>
+    <div className="font-emoji my-3 text-lg grow shrink truncate">{table.title}</div>
     <div className="font-emoji ml-auto my-3 text-lg">{renderCall(table.firstBid)}</div>
     <button
       className="ml-3 w-10 h-10 min-w-[2.5rem] border rounded-full"
@@ -73,7 +77,6 @@ export const TableSelector: FunctionComponent = () => {
   const tables = useAppSelector(state => state.nav);
 
   const [searchString, setSearchString] = useState("");
-  const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value), []);
 
   if (tables.state === "loading") {
     // TODO
@@ -82,7 +85,7 @@ export const TableSelector: FunctionComponent = () => {
     return <div className="w-96">
       <div className="rounded-lg bg-white w-full mb-1 h-96 border flex flex-col shadow-[0_-1px_3px_0_rgba(0,0,0,0.1),0_-1px_2px_-1px_rgba(0,0,0,0.1)] divide-y">
         <div className="bg-neutral-200 py-3 px-3 flex">
-          <input className="grow rounded-md py-2 px-4" placeholder={t`search`} value={searchString} onChange={onInputChange} />
+          <Input className="grow rounded-md py-2 px-4 min-w-0" placeholder={t`search`} value={searchString} onChange={setSearchString} />
         </div>
         <div className="grow flex flex-col overflow-y-auto">
           {tables.tables.map(table => <TableOption

@@ -11,10 +11,10 @@ export type TableBrief = {
   id: number;
   title: string;
   firstBid: Bid;
-  description: RichText;
 };
 
 export type Table = TableBrief & {
+  description: RichText;
   meanings: Partial<Record<Call, RichText>>;
   links: Partial<Record<Call, number>>;
 };

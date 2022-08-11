@@ -17,6 +17,8 @@ const i18nResources = {
       "removeTable": "删除表格",
       "certainToRemoveTable": "确定要删除表格\"{{title}}\"吗？",
       "remove": "删除",
+      "tableDescription": "表格描述",
+      "noSelectedTable": "未选择表格",
       "save...": "保存...",
       "load...": "读取...",
     },
