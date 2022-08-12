@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { DetailedHTMLProps, FunctionComponent, ReactNode } from "react";
+import React, { DetailedHTMLProps, ReactNode } from "react";
 import { forwardRef } from "react";
 import { ColorSchemes } from "../lib/colorSchemes";
 

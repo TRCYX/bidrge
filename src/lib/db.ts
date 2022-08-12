@@ -3,7 +3,7 @@ import { Bid, Call } from "./bridge";
 import { RichText } from "./editor";
 
 export type DBTableBrief = {
-  id?: number;
+  id: number;
   title: string;
   firstBid: Bid;
   description: RichText;

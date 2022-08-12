@@ -7,9 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./lib/state";
 import { initI18n } from "./lib/i18n";
-import { db } from "./lib/db";
-import { setNavReady } from "./lib/navState";
-import { TableBrief } from "./lib/tableState";
+import { loadNavState } from "./components/BottomBar";
 
 initI18n();
 
@@ -26,11 +24,7 @@ root.render(
   </StrictMode>
 );
 
-db.transaction("r", [db.briefs], () => {
-  return db.briefs.orderBy("id").toArray();
-}).then(briefs => {
-  store.dispatch(setNavReady(briefs.map(({ id, title, firstBid }) => ({ id, title, firstBid } as TableBrief))));
-});
+loadNavState();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -1,5 +1,4 @@
-import React, { Key, ReactNode, useCallback } from "react";
-import classNames from "classnames";
+import React, { Key, ReactNode } from "react";
 import { CircularButton } from "./CircularButton";
 
 export type ButtonSelectorProps<T> = {

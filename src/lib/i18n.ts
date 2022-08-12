@@ -19,8 +19,8 @@ const i18nResources = {
       "remove": "删除",
       "tableDescription": "表格描述",
       "noSelectedTable": "未选择表格",
-      "save...": "保存...",
-      "load...": "读取...",
+      "download...": "下载…",
+      "upload...": "上传…",
     },
   },
 };

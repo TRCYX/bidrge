@@ -14,6 +14,11 @@ const navSlice = createSlice({
   name: "nav",
   initialState: { state: "loading" } as NavState,
   reducers: {
+    setNavLoading: state => {
+      return {
+        state: "loading",
+      };
+    },
     setNavReady: (state, action: PayloadAction<TableBrief[]>) => {
       return {
         state: "ready",
@@ -47,6 +52,6 @@ const navSlice = createSlice({
   },
 });
 
-export const { setNavReady, addedTable, modifiedTable, removedTable } = navSlice.actions;
+export const { setNavLoading, setNavReady, addedTable, modifiedTable, removedTable } = navSlice.actions;
 
 export const navReducer = navSlice.reducer;

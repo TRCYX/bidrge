@@ -43,6 +43,10 @@ export function isBid(call: Call): call is Bid {
   return "0" <= call[0] && call[0] <= "9";
 }
 
+export function isCall(s: string): s is Call {
+  return ((bids as readonly string[]).includes(s) && s !== "8C") || s === "pass" || s === "double";
+}
+
 export function getExtraTricks(bid: Bid): ExtraTricks {
   return parseInt(bid[0]) as ExtraTricks;
 }

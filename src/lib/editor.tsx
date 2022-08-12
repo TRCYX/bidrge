@@ -8,7 +8,7 @@ import { modKey } from "./keys";
 
 export type ParagraphElement = {
   type: "paragraph";
-  children: Descendant[];
+  children: EditorText[];
 };
 
 export type EditorElement = ParagraphElement;
@@ -30,7 +30,7 @@ export function useEditor() {
   return useCreation(() => withReact(createEditor()), []);
 }
 
-export type RichText = Descendant[];
+export type RichText = EditorElement[];
 
 function renderLeaf(props: RenderLeafProps) {
   if (props.leaf.bold) {
@@ -83,7 +83,7 @@ export const TextEditor: FunctionComponent<TextEditorProps> = ({ initialValue, o
   return <Slate
     editor={editor}
     value={initialValue}
-    onChange={onSlateChange}
+    onChange={onSlateChange as (t: Descendant[]) => void}
   >
     <Editable
       {...props}

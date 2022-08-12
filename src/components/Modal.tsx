@@ -1,17 +1,32 @@
 import React, { FunctionComponent, ReactNode } from "react";
 import Popup from "reactjs-popup";
 
+export type ModalBodyProps = {
+  children: ReactNode | ReactNode[];
+};
+
+export const ModalBody: FunctionComponent<ModalBodyProps> = ({ children }) => {
+  return <div className="py-3 px-4 min-h-[10rem]">{children}</div>;
+};
+
+export type ModalActionsProps = {
+  children: ReactNode | ReactNode[];
+};
+
+export const ModalActions: FunctionComponent<ModalActionsProps> = ({ children }) => {
+  return <div className="py-3 px-4 flex flex-row justify-end">{children}</div>;
+};
+
 export type ModalProps = {
   open: boolean;
   nested?: boolean;
   title: string;
-  actions: ReactNode;
   onClose(): void;
   working?: boolean;
   children: ReactNode | ReactNode[];
 };
 
-export const Modal: FunctionComponent<ModalProps> = ({ open, nested, title, actions, onClose, working, children }) => {
+export const Modal: FunctionComponent<ModalProps> = ({ open, nested, title, onClose, working, children }) => {
   return (
     <Popup
       open={open}
@@ -32,9 +47,8 @@ export const Modal: FunctionComponent<ModalProps> = ({ open, nested, title, acti
             +
           </button>
           <h3 className="text-xl font-semibold">{title}</h3>
+          {children}
         </div>
-        <div className="py-3 px-4 min-h-[10rem]">{children}</div>
-        <div className="py-3 px-4 flex flex-row justify-end">{actions}</div>
       </div>
     </Popup>);
 };

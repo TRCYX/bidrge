@@ -4,7 +4,7 @@ import { db } from "../lib/db";
 import { removedTable as removedTableNav } from "../lib/navState";
 import { AppDispatch, useAppDispatch } from "../lib/state";
 import { removedTable as removedTableTable, TableBrief } from "../lib/tableState";
-import { Modal } from "./Modal";
+import { Modal, ModalActions, ModalBody } from "./Modal";
 import { PushButton } from "./PushButton";
 
 const removeTable = (table: TableBrief) => async (dispatch: AppDispatch) => {
@@ -29,7 +29,6 @@ export type DeleteTableModalProps = {
 export const DeleteTableModal: FunctionComponent<DeleteTableModalProps> = ({ open, nested, table, onClose }) => {
   const { t } = useTranslation();
 
-  // TODO
   const [working, setWorking] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -38,33 +37,33 @@ export const DeleteTableModal: FunctionComponent<DeleteTableModalProps> = ({ ope
     nested={nested}
     working={working}
     title={t`removeTable`}
-    actions={
-      <>
-        <PushButton
-          onClick={async () => {
-            setWorking(true);
-            await dispatch(removeTable(table));
-            setWorking(false);
-            onClose();
-          }}
-          disabled={working}
-          loading={working}
-          colorScheme="red"
-          className="mr-3"
-        >
-          {t`remove`}
-        </PushButton>
-        <PushButton
-          disabled={working}
-          onClick={onClose}
-          colorScheme="gray"
-        >
-          {t`cancel`}
-        </PushButton>
-      </>
-    }
     onClose={onClose}
   >
-    {t("certainToRemoveTable", { title: table.title })}
+    <ModalBody>
+      {t("certainToRemoveTable", { title: table.title })}
+    </ModalBody>
+    <ModalActions>
+      <PushButton
+        onClick={async () => {
+          setWorking(true);
+          await dispatch(removeTable(table));
+          setWorking(false);
+          onClose();
+        }}
+        disabled={working}
+        loading={working}
+        colorScheme="red"
+        className="mr-3"
+      >
+        {t`remove`}
+      </PushButton>
+      <PushButton
+        disabled={working}
+        onClick={onClose}
+        colorScheme="gray"
+      >
+        {t`cancel`}
+      </PushButton>
+    </ModalActions>
   </Modal>;
 };
