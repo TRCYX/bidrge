@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/bidrge/static/css/main.79da600b.css",
+    "main.js": "/bidrge/static/js/main.df96329f.js",
+    "static/js/787.59cab23a.chunk.js": "/bidrge/static/js/787.59cab23a.chunk.js",
+    "index.html": "/bidrge/index.html",
+    "main.79da600b.css.map": "/bidrge/static/css/main.79da600b.css.map",
+    "main.df96329f.js.map": "/bidrge/static/js/main.df96329f.js.map",
+    "787.59cab23a.chunk.js.map": "/bidrge/static/js/787.59cab23a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.79da600b.css",
+    "static/js/main.df96329f.js"
+  ]
+}
