@@ -30,7 +30,7 @@ const Page: FunctionComponent = () => {
 
 export const App: FunctionComponent = () => {
   const {t} = useTranslation();
-  useTitle("BRIDGE - " + t`biddingNotepad`);
+  useTitle("BIDRGE - " + t`biddingNotepad`);
   return <Routes>
     <Route path="/" element={<Page />} />
   </Routes>;
