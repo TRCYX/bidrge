@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { Bid, compareBids, ExtraTricks, extraTrickValues, getExtraTricks, getSuit, isBid, renderSuit, Suit, suitValues } from "../lib/bridge";
 import { db, DBTableBrief } from "../lib/db";
 import { emptyRichText } from "../lib/editor";
@@ -25,15 +26,16 @@ const modifyTable = (id: number, title: string, firstBid: Bid) => async (dispatc
   dispatch(modifiedTable({ id, title, firstBid }));
 };
 
-const createTable = (title: string, firstBid: Bid) => async (dispatch: AppDispatch) => {
+const createTable = (title: string, firstBid: Bid, navigate: NavigateFunction) => async (dispatch: AppDispatch) => {
   const description = emptyRichText;
 
   const id = (await db.transaction("rw", [db.briefs], () => {
     return db.briefs.add({ title, firstBid, description } as DBTableBrief);
   })) as number;
 
-  dispatch(setTableReady({ id, title, firstBid, description, meanings: {}, links: {} }));
   dispatch(addedTable({ id, title, firstBid }));
+  dispatch(setTableReady({ id, title, firstBid, description, meanings: {}, links: {} }));
+  navigate(`/${id}`);
 }
 
 export type EditTableInfoModalProps = {
@@ -55,6 +57,7 @@ export const EditTableInfoModal: FunctionComponent<EditTableInfoModalProps> = ({
 
   const [working, setWorking] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   return <Modal
     open={open}
@@ -103,7 +106,7 @@ export const EditTableInfoModal: FunctionComponent<EditTableInfoModalProps> = ({
           if (id != null) {
             await dispatch(modifyTable(id, title, firstBid));
           } else {
-            await dispatch(createTable(title, firstBid));
+            await dispatch(createTable(title, firstBid, navigate));
           }
           setWorking(false);
           onClose();

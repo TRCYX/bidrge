@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from "react";
 
 export type TableBriefViewProps = {
-  id: number;
+  // id: number;
 };
 
-export const TableBriefView: FunctionComponent<TableBriefViewProps> = ({ id }) => {
+export const TableBriefView: FunctionComponent<TableBriefViewProps> = () => {
   return <div>{ /* TODO */}</div>;
 };

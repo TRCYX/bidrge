@@ -3,11 +3,13 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { App } from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { HashRouter } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./lib/state";
 import { initI18n } from "./lib/i18n";
 import { loadNavState } from "./components/BottomBar";
+import { EmptyTableView } from "./components/EmptyTableView";
+import { TableController } from "./components/TableController";
 
 initI18n();
 
@@ -18,7 +20,12 @@ root.render(
   <StrictMode>
     <Provider store={store}>
       <HashRouter>
-        <App />
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route index element={<EmptyTableView />} />
+            <Route path=":tableId" element={<TableController />} />
+          </Route>
+        </Routes>
       </HashRouter>
     </Provider>
   </StrictMode>

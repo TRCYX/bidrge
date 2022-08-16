@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { BaseEditor, Editor, Text } from "slate";
 import { ReactEditor } from "slate-react";
@@ -6,8 +7,7 @@ import { Call, renderCall } from "../lib/bridge";
 import { db } from "../lib/db";
 import { emptyRichText, RichText, TextEditor } from "../lib/editor";
 import { AppDispatch, useAppDispatch, useAppSelector } from "../lib/state";
-import { BidInfo, setCallLink, setCallMeaning, TableBrief, TableState } from "../lib/tableState";
-import { setActiveTable } from "./BottomBar";
+import { BidInfo, setCallLink, setCallMeaning, setTableLoading, TableBrief, TableState } from "../lib/tableState";
 import { CircularButton } from "./CircularButton";
 import { TableSelector } from "./TableSelector";
 
@@ -43,6 +43,7 @@ export type BidItemPropsWithBid = BidInfo & {
 export const CallItem: FunctionComponent<BidItemPropsWithBid> = ({ call, meaning, link }) => {
   const { id: tableId, readOnly } = useAppSelector(state => state.table as TableState & { state: "ready" });
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const onMeaningChange = useCallback((t: RichText, editor: BaseEditor & ReactEditor) => {
     const [match] = Editor.nodes(editor, {
@@ -70,15 +71,20 @@ export const CallItem: FunctionComponent<BidItemPropsWithBid> = ({ call, meaning
           className="font-emoji mr-auto"
           disabled={link === null}
           colorScheme={link !== null ? "gray" : "text"}
-          onClick={link !== null ? () => dispatch(setActiveTable(link)) : undefined}
+          onClick={link !== null ?
+            () => {
+              dispatch(setTableLoading(link));
+              navigate(`/${link.id}`);
+            } :
+            undefined}
         >
           {renderCall(call)}
         </CircularButton>}
         on="hover"
       >
         {link !== null && <div className="px-3 py-3 bg-white border rounded-lg w-80 flex flex-row items-center shadow-md">
-        <div className="font-emoji text-lg grow shrink truncate">{link.title}</div>
-        <div className="font-emoji ml-auto text-lg">{renderCall(link.firstBid)}</div>
+          <div className="font-emoji text-lg grow shrink truncate">{link.title}</div>
+          <div className="font-emoji ml-auto text-lg">{renderCall(link.firstBid)}</div>
         </div>}
       </Popup>
       {!readOnly &&

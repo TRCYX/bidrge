@@ -1,57 +1,19 @@
 import React, { FunctionComponent, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { Popup } from "reactjs-popup";
 import { AppDispatch, store, useAppDispatch, useAppSelector } from "../lib/state";
 import { shallowEqual } from "react-redux";
 import { EditTableInfoModal } from "./EditTableInfoModal";
 import { TableSelector } from "./TableSelector";
 import { useBoolean } from "ahooks";
-import { Call } from "../lib/bridge";
 import { db } from "../lib/db";
-import { RichText } from "../lib/editor";
-import { TableBrief, setTableLoading, setTableReady, setTableEmpty } from "../lib/tableState";
+import { TableBrief, setTableLoading, setTableEmpty } from "../lib/tableState";
 import { useCallback } from "react";
 import { deserializeDB, serializeDB } from "../lib/serialize";
 import { parse, stringify } from "yaml";
 import { saveAs } from "file-saver";
 import { setNavLoading, setNavReady } from "../lib/navState";
-
-export const setActiveTable = (brief: TableBrief) => async (dispatch: AppDispatch) => {
-  dispatch(setTableLoading(brief));
-
-  const table = await db.transaction("r", [db.briefs, db.meanings, db.links], async () => {
-    const meanings: Partial<Record<Call, RichText>> = {};
-    const meaningsPromise = db.meanings.where("tableId").equals(brief.id).each(m => {
-      meanings[m.call] = m.meaning;
-    });
-
-    const links: Partial<Record<Call, TableBrief>> = {};
-    const linksPromise = (async () => {
-      const linkArr = await db.links.where("tableId").equals(brief.id).toArray();
-      const briefArr = await Promise.all(linkArr.map(l => db.briefs.get(l.link)));
-      for (let i = 0; i < linkArr.length; ++i) {
-        const { id, title, firstBid } = briefArr[i]!;
-        links[linkArr[i].call] = { id, title, firstBid };
-      }
-    })();
-
-    const [description, ,] = await Promise.all([
-      db.briefs.get(brief.id).then(b => b!.description),
-      meaningsPromise,
-      linksPromise,
-    ]);
-
-    return {
-      ...brief,
-      description,
-      meanings,
-      links,
-    };
-  });
-
-  dispatch(setTableReady(table));
-};
 
 async function download() {
   const serialized = await serializeDB();
@@ -83,7 +45,7 @@ const upload = (file: File) => async (dispatch: AppDispatch) => {
   } catch (e) {
     console.log(e);
   }
-  
+
   await loadNavState();
 };
 
@@ -111,11 +73,12 @@ export const BottomBar: FunctionComponent = () => {
   ] = useBoolean(false);
 
   const dispatch = useAppDispatch();
-  const onSelectTable = useCallback((table: TableBrief) => {
-    dispatch(setActiveTable(table));
-  }, [dispatch]);
-
   const navigate = useNavigate();
+
+  const onSelectTable = useCallback((table: TableBrief) => {
+    dispatch(setTableLoading(table));
+    navigate(`/${table.id}`);
+  }, [dispatch, navigate]);
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
@@ -172,6 +135,7 @@ export const BottomBar: FunctionComponent = () => {
       const fileUploaded = e.target.files && e.target.files[0];
       if (fileUploaded) {
         dispatch(upload(fileUploaded));
+        navigate("/");
       }
     }} />
   </nav>;
