@@ -7,7 +7,7 @@ import { BottomBar } from "./components/BottomBar";
 export const App: FunctionComponent = () => {
   const { t } = useTranslation();
   useTitle("BIDRGE - " + t`biddingNotepad`);
-  return <div className="w-screen h-screen flex flex-col">
+  return <div className="w-screen w-[100dvw] h-screen h-[100dvh] flex flex-col">
     <main className="grow overflow-y-auto">
       <Outlet />
     </main>
